@@ -21,13 +21,15 @@ public class MongoDBService
         await _klasseCollection.InsertOneAsync(klasse);
         return;
     }
-    // noch anpassen
+    // TODO noch anpassen
 
+    // Get Service um nach Bestellung suchen zukönnen
     public async Task<List<Bestellungen>> GetAsync()
     {
         return await _klasseCollection.Find(new BsonDocument()).ToListAsync();
     }
 
+    // Get Service um nach Bestellung mit Id suchen zukönnen
     public async Task<Bestellungen> GetAsyncId(string id)
     {
         var filter = Builders<Bestellungen>.Filter.Eq("Id", id);
@@ -42,7 +44,7 @@ public class MongoDBService
         await _klasseCollection.UpdateOneAsync(filter, update);
         return;
     }
-    // noch anpassen
+    // TODO noch anpassen
 
     public async Task DeteleAsync(string id)
     {
@@ -50,6 +52,6 @@ public class MongoDBService
         await _klasseCollection.DeleteOneAsync(filter);
         return;
     } 
-    // noch anpassen
+    // TODO noch anpassen
 }
 

@@ -42,7 +42,7 @@ namespace MongoExample.Models
         public string? StatusName { get; set; }
 
         [BsonElement("MitarbeiterName")]
-        public string MitarbeiterName { get; set; }
+        public string? MitarbeiterName { get; set; }
     }
 }
 
