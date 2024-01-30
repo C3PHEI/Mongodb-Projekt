@@ -22,6 +22,18 @@ namespace MangoExample.Controllers
             return await _mongoDBService.GetAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Bestellungen>> GetById(string id)
+        {
+            var bestellung = await _mongoDBService.GetAsyncId(id);
+            if (bestellung == null)
+            {
+                return NotFound();
+            }
+            return bestellung;
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Bestellungen bestellungen) { 
             await _mongoDBService.CreateAsync(bestellungen);
