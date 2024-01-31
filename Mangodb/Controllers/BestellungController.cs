@@ -7,11 +7,11 @@ namespace MangoExample.Controllers
 {
     [Controller]
     [Route("api/[controller]")]
-    public class KlasseController : Controller
+    public class BestellungController : Controller
     {
         private readonly BestellungService _mongoDBService;
 
-        public KlasseController(BestellungService mongoDBService)
+        public BestellungController(BestellungService mongoDBService)
         {
             _mongoDBService = mongoDBService;
         }
