@@ -9,9 +9,9 @@ namespace MangoExample.Controllers
     [Route("api/[controller]")]
     public class KlasseController : Controller
     {
-        private readonly MongoDBService _mongoDBService;
+        private readonly BestellungService _mongoDBService;
 
-        public KlasseController(MongoDBService mongoDBService)
+        public KlasseController(BestellungService mongoDBService)
         {
             _mongoDBService = mongoDBService;
         }
@@ -42,11 +42,19 @@ namespace MangoExample.Controllers
         //noch anpassen
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> AddToKlasse(string id, [FromBody] string Klassenlehrer) 
+        public async Task<IActionResult> UpdateBestellung(string id, [FromBody] Bestellungen bestellung)
         {
-            await _mongoDBService.AddToKlasseAsync(id, Klassenlehrer);
-            return NoContent();
+            try
+            {
+                await _mongoDBService.UpdateBestellungAsync(id, bestellung);
+                return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
         //noch anpassen
 
         [HttpDelete("{id}")]
