@@ -33,13 +33,11 @@ namespace MangoExample.Controllers
             return bestellung;
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Bestellungen bestellungen) { 
             await _mongoDBService.CreateAsync(bestellungen);
             return CreatedAtAction(nameof(Get),new { id = bestellungen.Id }, bestellungen);
         }
-        //noch anpassen
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBestellung(string id, [FromBody] Bestellungen bestellung)
@@ -55,14 +53,11 @@ namespace MangoExample.Controllers
             }
         }
 
-        //noch anpassen
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id) 
         {
             await _mongoDBService.DeteleAsync(id);
             return NoContent();
         }
-        // noch anpassen
     }
 }

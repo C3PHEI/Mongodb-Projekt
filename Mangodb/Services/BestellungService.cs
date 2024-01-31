@@ -42,7 +42,7 @@ public class BestellungService
         _mitarbeiterService = mitarbeiterService;
     }
 
-
+    // POST Service um eine Bestellung erstellen zukönnen
     public async Task CreateAsync(Bestellungen bestellungen)
     {
         await _klasseCollection.InsertOneAsync(bestellungen);
@@ -50,13 +50,13 @@ public class BestellungService
     }
     // TODO noch anpassen
 
-    // Get Service um nach Bestellung suchen zukönnen
+    // GET Service um nach Bestellung suchen zukönnen
     public async Task<List<Bestellungen>> GetAsync()
     {
         return await _klasseCollection.Find(new BsonDocument()).ToListAsync();
     }
 
-    // Get Service um nach Bestellung mit Id suchen zukönnen
+    // GET Service um nach Bestellung mit Id suchen zukönnen
     public async Task<Bestellungen> GetAsyncId(string id)
     {
         var filter = Builders<Bestellungen>.Filter.Eq("Id", id);
@@ -69,12 +69,13 @@ public class BestellungService
         return await _statusService.GetGueltigeStatusNamen();
     }
 
+    // PUT Service um =Bestellung mit Id updaten zukönnen
     public async Task UpdateBestellungAsync(string id, Bestellungen bestellungen)
     {
+        // Gibt eine fehler falls der Service nicht existiert
         if (!gueltigeServices.Contains(bestellungen.Service))
         {
-            // Gibt einer fehler falls der Service nicht existiert
-            throw new ArgumentException("Ungültiger Service-Wert." +
+            throw new ArgumentException("Ungültiger Service." +
                 "\n\nBenutzen Sie eine Von diesen eingaben:" +
                 "\n - Kleiner Service" +
                 "\n - Grosser Service" +
@@ -86,9 +87,10 @@ public class BestellungService
 
         var gueltigeStatusNamen = await _statusService.GetGueltigeStatusNamen();
 
+        // Gibt eine fehler falls der Status nicht existiert
         if (!gueltigeStatusNamen.Contains(bestellungen.StatusName))
         {
-            throw new ArgumentException("Ungültiger StatusName-Wert." +
+            throw new ArgumentException("Ungültiger StatusName." +
                 "\n\nBenutzen Sie eine Von diesen eingaben:" +
                 "\n - Offen" +
                 "\n - In - Arbeit" +
@@ -97,6 +99,8 @@ public class BestellungService
         }
 
         var gueltigeMitarbeiterNamen = await _mitarbeiterService.GetGueltigeMitarbeiterNamen();
+
+        // Gibt eine fehler falls der Mitarbeiter nicht existiert
         if (!gueltigeMitarbeiterNamen.Contains(bestellungen.MitarbeiterName))
         {
             throw new ArgumentException("Ungültiger MitarbeiterName.");
@@ -119,7 +123,7 @@ public class BestellungService
         await _klasseCollection.UpdateOneAsync(filter, update);
     }
 
-
+    // DELETE Service um Bestellung mit Id löschen zukönnen
     public async Task DeteleAsync(string id)
     {
         FilterDefinition<Bestellungen> filter = Builders<Bestellungen>.Filter.Eq("Id", id);
