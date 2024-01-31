@@ -31,13 +31,15 @@ public class BestellungService
 
     private readonly IMongoCollection<Bestellungen> _klasseCollection;
     private readonly StatusService _statusService;
+    private readonly MitarbeiterService _mitarbeiterService;
 
-    public BestellungService(IOptions<MongoDBSettings> mongoDBSettings, StatusService statusService)
+    public BestellungService(IOptions<MongoDBSettings> mongoDBSettings, StatusService statusService, MitarbeiterService mitarbeiterService)
     {
         MongoClient client = new MongoClient(mongoDBSettings.Value.ConnectionURI);
         IMongoDatabase database = client.GetDatabase(mongoDBSettings.Value.DatabaseName);
         _klasseCollection = database.GetCollection<Bestellungen>(mongoDBSettings.Value.BestellungCollectionName);
-        _statusService = statusService; // Korrekte Zuweisung
+        _statusService = statusService;
+        _mitarbeiterService = mitarbeiterService;
     }
 
 
@@ -82,7 +84,7 @@ public class BestellungService
                 "\n - Heisswachsen");
         }
 
-        var gueltigeStatusNamen = await GetGueltigeStatusNamen();
+        var gueltigeStatusNamen = await _statusService.GetGueltigeStatusNamen();
 
         if (!gueltigeStatusNamen.Contains(bestellungen.StatusName))
         {
@@ -92,6 +94,12 @@ public class BestellungService
                 "\n - In - Arbeit" +
                 "\n - Abgeschlossen" +
                 "\n - Storniert");
+        }
+
+        var gueltigeMitarbeiterNamen = await _mitarbeiterService.GetGueltigeMitarbeiterNamen();
+        if (!gueltigeMitarbeiterNamen.Contains(bestellungen.MitarbeiterName))
+        {
+            throw new ArgumentException("Ungültiger MitarbeiterName.");
         }
 
         var filter = Builders<Bestellungen>.Filter.Eq("_id", new ObjectId(id));
