@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Bindings;
+using Mongodb.Services;
 
 namespace MongoExample.Services;
 
@@ -28,14 +29,17 @@ public class BestellungService
     //    };
     //*
 
-    private readonly IMongoCollection<Bestellungen> _klasseCollection; 
+    private readonly IMongoCollection<Bestellungen> _klasseCollection;
+    private readonly StatusService _statusService;
 
-    public BestellungService(IOptions<MongoDBSettings> mongoDBSettings)
+    public BestellungService(IOptions<MongoDBSettings> mongoDBSettings, StatusService statusService)
     {
-        MongoClient client = new MongoClient(mongoDBSettings.Value.ConnectionURI); 
+        MongoClient client = new MongoClient(mongoDBSettings.Value.ConnectionURI);
         IMongoDatabase database = client.GetDatabase(mongoDBSettings.Value.DatabaseName);
-        _klasseCollection = database.GetCollection<Bestellungen>(mongoDBSettings.Value.CollectionName);
+        _klasseCollection = database.GetCollection<Bestellungen>(mongoDBSettings.Value.BestellungCollectionName);
+        _statusService = statusService; // Korrekte Zuweisung
     }
+
 
     public async Task CreateAsync(Bestellungen bestellungen)
     {
@@ -57,6 +61,12 @@ public class BestellungService
         return await _klasseCollection.Find(filter).FirstOrDefaultAsync();
     }
 
+    // Holen der gültigen Statusnamen aus StatusService
+    public async Task<List<string>> GetGueltigeStatusNamen()
+    {
+        return await _statusService.GetGueltigeStatusNamen();
+    }
+
     public async Task UpdateBestellungAsync(string id, Bestellungen bestellungen)
     {
         if (!gueltigeServices.Contains(bestellungen.Service))
@@ -70,6 +80,18 @@ public class BestellungService
                 "\n - Bindung montieren und einstellen" +
                 "\n - Fell zuschneiden" +
                 "\n - Heisswachsen");
+        }
+
+        var gueltigeStatusNamen = await GetGueltigeStatusNamen();
+
+        if (!gueltigeStatusNamen.Contains(bestellungen.StatusName))
+        {
+            throw new ArgumentException("Ungültiger StatusName-Wert." +
+                "\n\nBenutzen Sie eine Von diesen eingaben:" +
+                "\n - Offen" +
+                "\n - In - Arbeit" +
+                "\n - Abgeschlossen" +
+                "\n - Storniert");
         }
 
         var filter = Builders<Bestellungen>.Filter.Eq("_id", new ObjectId(id));
