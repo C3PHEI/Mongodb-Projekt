@@ -42,9 +42,41 @@ public class BestellungService
         _mitarbeiterService = mitarbeiterService;
     }
 
+    // Holen der gültigen Statusnamen aus StatusService
+    public async Task<List<string>> GetGueltigeStatusNamen()
+    {
+        return await _statusService.GetGueltigeStatusNamen();
+    }
+
+    // Holen der gültigen Mitarbeiternamen aus MitarbeiterService
+    public async Task<List<string>> GetGueltigeMitarbeiterNamen()
+    {
+        return await _mitarbeiterService.GetGueltigeMitarbeiterNamen();
+    }
+
     // POST Service um eine Bestellung erstellen zukönnen
     public async Task CreateAsync(Bestellungen bestellungen)
     {
+        // Überprüfung von Service
+        if (!gueltigeServices.Contains(bestellungen.Service))
+        {
+            throw new ArgumentException("Ungültiger Service-Wert.");
+        }
+
+        // Überprüfung von StatusName
+        var gueltigeStatusNamen = await GetGueltigeStatusNamen();
+        if (!gueltigeStatusNamen.Contains(bestellungen.StatusName))
+        {
+            throw new ArgumentException("Ungültiger StatusName.");
+        }
+
+        // Überprüfung von MitarbeiterName
+        var gueltigeMitarbeiterNamen = await GetGueltigeMitarbeiterNamen();
+        if (!gueltigeMitarbeiterNamen.Contains(bestellungen.MitarbeiterName))
+        {
+            throw new ArgumentException("Ungültiger MitarbeiterName.");
+        }
+
         await _klasseCollection.InsertOneAsync(bestellungen);
         return;
     }
@@ -63,12 +95,6 @@ public class BestellungService
         return await _klasseCollection.Find(filter).FirstOrDefaultAsync();
     }
 
-    // Holen der gültigen Statusnamen aus StatusService
-    public async Task<List<string>> GetGueltigeStatusNamen()
-    {
-        return await _statusService.GetGueltigeStatusNamen();
-    }
-
     // PUT Service um =Bestellung mit Id updaten zukönnen
     public async Task UpdateBestellungAsync(string id, Bestellungen bestellungen)
     {
@@ -76,7 +102,7 @@ public class BestellungService
         if (!gueltigeServices.Contains(bestellungen.Service))
         {
             throw new ArgumentException("Ungültiger Service." +
-                "\n\nBenutzen Sie eine Von diesen eingaben:" +
+                "\n\nBenutzen Sie eine von diesen eingaben:" +
                 "\n - Kleiner Service" +
                 "\n - Grosser Service" +
                 "\n - Rennski-Service" +
@@ -91,7 +117,7 @@ public class BestellungService
         if (!gueltigeStatusNamen.Contains(bestellungen.StatusName))
         {
             throw new ArgumentException("Ungültiger StatusName." +
-                "\n\nBenutzen Sie eine Von diesen eingaben:" +
+                "\n\nBenutzen Sie eine von diesen eingaben:" +
                 "\n - Offen" +
                 "\n - In - Arbeit" +
                 "\n - Abgeschlossen" +
