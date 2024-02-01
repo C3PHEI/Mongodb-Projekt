@@ -19,15 +19,6 @@ public class BestellungService
             "Fell zuschneiden",
             "Heisswachsen"
         };
-    //* Setzt fest welcher Status von der Bestellung eingeben werden kann
-    //private readonly List<string> gueltigeStatus = new List<string>
-    //    {
-    //        "Offen",
-    //        "In-Arbeit",
-    //        "Stoniert",
-    //        "Abgeschlossen"
-    //    };
-    //*
 
     private readonly IMongoCollection<Bestellungen> _klasseCollection;
     private readonly StatusService _statusService;
