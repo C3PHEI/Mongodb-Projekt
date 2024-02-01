@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoExample.Services;
 using MongoExample.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MangoExample.Controllers
 {

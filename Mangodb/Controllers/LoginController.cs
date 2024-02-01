@@ -22,9 +22,9 @@ namespace MangoExample.Controllers
         {
             var user = _userService.Authenticate(username, password);
 
-            if (user == null)
+            if (user == null || user.Blockiert)
             {
-                return BadRequest(new { message = "Benutzername oder Passwort ist falsch." });
+                return BadRequest(new { message = "Benutzername oder Passwort ist falsch oder Benutzer ist blockiert." });
             }
 
             var token = _userService.GenerateJwtToken(user.Benutzername);
