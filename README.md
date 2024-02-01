@@ -1,7 +1,7 @@
 Um die Datenbank im ersten schritt zu erstellen.
- Starten sie Skript.js in mongosh oder powershell
+ Starten sie Skript.js in mongosh oder powershell, 
 
-Dann solte die Datenbank erstellt sein und das Projekt kann getestet werden.
+dann solte die Datenbank erstellt sein und das Projekt kann getestet werden.
 
 _________________________________________________________________________________
 
