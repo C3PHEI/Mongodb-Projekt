@@ -38,20 +38,19 @@ public class LoginService
         return user;
     }
 
+
     public string GenerateJwtToken(string username)
     {
         var secret = _configuration.GetSection("JwtConfig:Secret").Value;
-        // var secret = _configuration.GetValue<string>("JwtConfig:Secret");
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
         var claims = new[] {
-            new Claim(ClaimTypes.Name, username)
-        };
+        new Claim(ClaimTypes.Name, username),
+        // Sicherheitswarnung: Passwort sollte hier nicht inkludiert werden
+    };
 
         var token = new JwtSecurityToken(
-            issuer: _configuration.GetValue<string>("JwtConfig:Issuer"),
-            audience: _configuration.GetValue<string>("JwtConfig:Audience"),
             claims: claims,
             expires: DateTime.Now.AddHours(3),
             signingCredentials: credentials

@@ -71,7 +71,6 @@ public class BestellungService
         await _klasseCollection.InsertOneAsync(bestellungen);
         return;
     }
-    // TODO noch anpassen
 
     // GET Service um nach Bestellung suchen zukönnen
     public async Task<List<Bestellungen>> GetAsync()

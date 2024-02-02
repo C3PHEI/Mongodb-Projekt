@@ -18,6 +18,7 @@ namespace Mongodb.Services
             _statusCollection = database.GetCollection<Status>(mongoDBSettings.Value.StatusCollectionName);
         }
 
+        // Service um Gultige Status für die Controller von Mongodb zu erhalten
         public async Task<List<string>> GetGueltigeStatusNamen()
         {
             var statusListe = await _statusCollection.Find(new BsonDocument()).ToListAsync();

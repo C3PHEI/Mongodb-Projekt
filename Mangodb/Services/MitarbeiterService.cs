@@ -17,6 +17,7 @@ namespace Mongodb.Services
             _mitarbeiterCollection = database.GetCollection<Mitarbeiter>(mongoDBSettings.Value.MitarbeiterCollectionName);
         }
 
+        // Service um Gultige Mitarbeiter für die Controller von Mongodb zu erhalten
         public async Task<List<string>> GetGueltigeMitarbeiterNamen()
         {
             var mitarbeiterListe = await _mitarbeiterCollection.Find(new BsonDocument()).ToListAsync();

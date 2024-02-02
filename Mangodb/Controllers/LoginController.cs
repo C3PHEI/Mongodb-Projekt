@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoExample.Services;
 using MongoExample.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MangoExample.Controllers
 {
@@ -16,8 +17,9 @@ namespace MangoExample.Controllers
             _userService = userService;
         }
 
-        // GET: /Auth?username=USERNAME&password=PASSWORD
+        // GET login = ergebniss ein Token
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Get(string username, string password)
         {
             var user = _userService.Authenticate(username, password);
